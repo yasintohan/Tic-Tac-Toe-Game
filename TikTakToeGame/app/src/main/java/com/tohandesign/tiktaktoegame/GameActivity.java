@@ -19,9 +19,10 @@ public class GameActivity extends AppCompatActivity {
     public int turn = 1;
 
     public boolean wintester = false;
+    public boolean drawtester = false;
     public boolean resettest = false;
     public boolean pause = false;
-    public boolean CPUtest = true;
+    public boolean CPUtest;
 
 
     public TextView turnText;
@@ -40,6 +41,9 @@ public class GameActivity extends AppCompatActivity {
         roundText = (TextView) findViewById(R.id.roundText);
         p1scoretext = (TextView) findViewById(R.id.p1score);
         p2scoretext = (TextView) findViewById(R.id.p2score);
+        CPUtest = getIntent().getBooleanExtra("CPU_VALUE", false);
+
+
     }
 
 
@@ -218,7 +222,7 @@ public class GameActivity extends AppCompatActivity {
 
             if(CPUtest){
                 turn = 2;
-                if(!wintester){
+                if(!wintester && !drawtester){
                     CPU cpu = new CPU(press);
                     cpu.chechMove();
                     int[] move = cpu.getMove();
@@ -383,6 +387,7 @@ public class GameActivity extends AppCompatActivity {
         if(press[0][0] > 0 && press[0][1] > 0 && press[0][2] > 0 &&
                 press[1][0] > 0 && press[1][1] > 0 && press[1][2] > 0 &&
                 press[2][0] > 0 && press[2][1] > 0 && press[2][2] > 0 && wintester == false){
+            drawtester = true;
             drawDialog();
         }
 
@@ -397,10 +402,7 @@ public class GameActivity extends AppCompatActivity {
     //--------------------new round--------------------
     public void newRound() {
         changeTurn();
-        if(CPUtest && turn == 2) {
-            turn =1;
-            changeTurn();
-        }
+
         if(wintester){
             if(turn == 1) {
                 p1score++;
@@ -412,12 +414,19 @@ public class GameActivity extends AppCompatActivity {
             wintester = false;
 
         }
+
+
         round++;
         roundText.setText(String.valueOf(round));
         press = new int[3][3];
         resettest = true;
         pause = false;
         drawTable();
+        drawtester = false;
+        if(CPUtest && turn == 2 && !wintester) {
+            turn = 1;
+            changeTurn();
+        }
 
     }
     //--------------------#new round--------------------
@@ -439,7 +448,9 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 pause = false;
+                drawtester = false;
                 newRound();
+
 
             }
         });
