@@ -21,6 +21,8 @@ public class GameActivity extends AppCompatActivity {
     public boolean wintester = false;
     public boolean resettest = false;
     public boolean pause = false;
+    public boolean CPUtest = true;
+
 
     public TextView turnText;
     public TextView roundText;
@@ -50,7 +52,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
 
@@ -68,7 +71,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
     }
@@ -83,7 +87,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
     }
@@ -104,7 +109,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
 
@@ -122,7 +128,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
     }
@@ -137,7 +144,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
     }
@@ -157,7 +165,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
 
@@ -175,7 +184,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
     }
@@ -190,7 +200,8 @@ public class GameActivity extends AppCompatActivity {
 
             drawTable();
             winTest();
-            changeTurn();
+            if(!wintester && !pause)
+                changeTurn();
 
         }
     }
@@ -204,8 +215,24 @@ public class GameActivity extends AppCompatActivity {
     //--------------------Change Turn--------------------
     public void changeTurn() {
         if(turn == 1) {
-            turn = 2;
-            turnText.setText("Player 2 Turn");
+
+            if(CPUtest){
+                turn = 2;
+                if(!wintester){
+                    CPU cpu = new CPU(press);
+                    cpu.chechMove();
+                    int[] move = cpu.getMove();
+                    press[move[0]][move[1]] = 2;
+                    drawTable();
+                    winTest();
+                    turn = 1;
+                }
+
+            }else {
+                turn = 2;
+                turnText.setText("Player 2 Turn");
+            }
+
         }
         else {
             turn = 1;
@@ -370,6 +397,10 @@ public class GameActivity extends AppCompatActivity {
     //--------------------new round--------------------
     public void newRound() {
         changeTurn();
+        if(CPUtest && turn == 2) {
+            turn =1;
+            changeTurn();
+        }
         if(wintester){
             if(turn == 1) {
                 p1score++;
